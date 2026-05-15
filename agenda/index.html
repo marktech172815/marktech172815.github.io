@@ -37,7 +37,6 @@
   .hero h1 .accent { background: linear-gradient(90deg, var(--cyan) 0%, var(--blue-mid) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
   .hero-desc { font-size: 15px; color: var(--text-dim); max-width: 480px; margin: 0 auto; line-height: 1.6; }
 
-  /* STEPS INDICATOR */
   .steps { position: relative; z-index: 10; display: flex; align-items: center; justify-content: center; gap: 0; margin: 0 auto 32px; max-width: 500px; padding: 0 32px; }
   .step { display: flex; align-items: center; gap: 10px; font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 2px; }
   .step-num { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--text-dim); transition: all 0.3s; }
@@ -49,7 +48,6 @@
   .step-line { flex: 1; height: 1px; background: var(--border); margin: 0 16px; }
   .step-line.done { background: var(--cyan); opacity: 0.4; }
 
-  /* MAIN */
   .main { position: relative; z-index: 10; max-width: 760px; margin: 0 auto; padding: 0 32px 64px; }
 
   .panel { position: relative; background: rgba(5,8,16,0.85); border: 1px solid var(--border); backdrop-filter: blur(16px); }
@@ -60,7 +58,6 @@
   .ph-title { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 4px; color: #fff; }
   .ph-badge { margin-left: auto; font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 2px; color: var(--cyan); border: 1px solid rgba(0,200,255,0.25); padding: 4px 10px; background: rgba(0,200,255,0.06); }
 
-  /* FORM PANEL */
   .form-body { padding: 36px 36px 40px; }
   .intro-text { font-size: 14px; color: var(--text-dim); line-height: 1.7; margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
   .intro-text strong { color: var(--cyan); }
@@ -86,6 +83,77 @@
   .btn span { position: relative; z-index: 1; }
   input.error, select.error { border-bottom-color: #ff3a4a !important; background: rgba(255,58,74,0.04) !important; }
 
+  /* SUCCESS BANNER */
+  .success-banner {
+    display: none;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(0,200,255,0.35);
+    background: rgba(0,200,255,0.06);
+    animation: revealUp 0.5s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  .success-banner::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--cyan), #00ffaa, var(--cyan), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 2.5s linear infinite;
+  }
+  @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+  .success-banner.show { display: flex; }
+  .sb-inner {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 22px 28px;
+    width: 100%;
+  }
+  .sb-icon {
+    width: 48px;
+    height: 48px;
+    border: 1px solid rgba(0,200,255,0.4);
+    background: rgba(0,200,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .sb-icon svg { color: var(--cyan); }
+  .sb-content { flex: 1; }
+  .sb-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: rgba(0,200,255,0.55);
+    margin-bottom: 6px;
+  }
+  .sb-headline {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 4px;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .sb-headline .hl { color: var(--cyan); }
+  .sb-sub {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+  .sb-sub strong { color: rgba(0,200,255,0.8); }
+  .sb-arrow {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 28px;
+    color: var(--cyan);
+    animation: bounce 1.2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+
   /* CAL PANEL */
   .cal-panel { display: none; animation: revealUp 0.6s cubic-bezier(0.16,1,0.3,1) both; }
   .cal-panel.show { display: block; }
@@ -106,6 +174,9 @@
     .grid-2 { grid-template-columns: 1fr; }
     .form-body { padding: 24px 20px; }
     .cal-embed { height: 560px; }
+    .sb-inner { gap: 14px; padding: 18px 20px; }
+    .sb-headline { font-size: 17px; }
+    .sb-arrow { display: none; }
   }
 </style>
 </head>
@@ -127,7 +198,6 @@
   <p class="hero-desc">Completa tus datos y selecciona un horario disponible para reunirte con el equipo de TechMark Industries.</p>
 </div>
 
-<!-- STEPS -->
 <div class="steps">
   <div class="step active" id="step1">
     <div class="step-num">1</div>
@@ -141,6 +211,23 @@
 </div>
 
 <div class="main">
+
+  <!-- SUCCESS BANNER -->
+  <div class="success-banner" id="success-banner">
+    <div class="sb-inner">
+      <div class="sb-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <div class="sb-content">
+        <div class="sb-tag">✓ &nbsp;DATOS REGISTRADOS · PASO 2 DE 2</div>
+        <div class="sb-headline">AHORA <span class="hl">ELIGE TU FECHA Y HORA</span></div>
+        <div class="sb-sub">Selecciona el horario que mejor te acomode para <strong>asegurar tu cupo</strong>. Recibirás una confirmación automática en tu correo.</div>
+      </div>
+      <div class="sb-arrow">↓</div>
+    </div>
+  </div>
 
   <!-- STEP 1: FORM -->
   <div class="panel" id="form-panel">
@@ -224,7 +311,6 @@
   <span class="hl">TECHMARK INDUSTRIES</span> &nbsp;·&nbsp; INTELIGENCIA ARTIFICIAL ON-PREMISE &nbsp;·&nbsp; VALDIVIA, CHILE &nbsp;·&nbsp; <span class="hl" id="yr"></span>
 </footer>
 
-<!-- EmailJS -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
   emailjs.init('psmbPqgPGXDZygWxR');
@@ -270,21 +356,24 @@
 
     emailjs.send('service_jivi2sw', 'template_rh47smb', templateParams)
       .then(() => { showCalendar(); })
-      .catch(() => { showCalendar(); }); // show calendar even if email fails
+      .catch(() => { showCalendar(); });
   }
 
   function showCalendar() {
-    // Update steps
     document.getElementById('step1').classList.remove('active');
     document.getElementById('step1').classList.add('done');
     document.getElementById('step-line').classList.add('done');
     document.getElementById('step2').classList.add('active');
 
-    // Hide form, show calendar
     document.getElementById('form-panel').style.display = 'none';
+
+    // Show the success banner first
+    const banner = document.getElementById('success-banner');
+    banner.classList.add('show');
+
+    // Then reveal the calendar
     document.getElementById('cal-panel').classList.add('show');
 
-    // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 </script>
