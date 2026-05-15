@@ -711,7 +711,11 @@
   <span class="hl">TECHMARK INDUSTRIES</span> &nbsp;·&nbsp; INTELIGENCIA ARTIFICIAL ON-PREMISE &nbsp;·&nbsp; VALDIVIA, CHILE &nbsp;·&nbsp; <span class="hl" id="yr"></span>
 </footer>
 
+<!-- EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
+  emailjs.init('psmbPqgPGXDZygWxR');
+
   // Clock
   (function tick() {
     document.getElementById('clock').textContent =
@@ -734,29 +738,41 @@
       }
     });
 
-    const email = document.getElementById('correo');
-    if (email.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
-      email.classList.add('error');
+    const emailEl = document.getElementById('correo');
+    if (emailEl.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value)) {
+      emailEl.classList.add('error');
       ok = false;
     }
 
     if (!ok) return;
 
     // Collect data
-    const data = {
-      nombre: document.getElementById('nombre').value + ' ' + document.getElementById('apellido').value,
+    const templateParams = {
+      nombre: document.getElementById('nombre').value,
+      apellido: document.getElementById('apellido').value,
       cargo: document.getElementById('cargo').value,
       empresa: document.getElementById('empresa').value,
       correo: document.getElementById('correo').value,
       interes: document.getElementById('interes').value,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toLocaleString('es-CL')
     };
 
-    console.log('TechMark Industries — Lead registrado:', data);
+    // Disable button
+    const btn = document.querySelector('.btn');
+    btn.style.opacity = '0.5';
+    btn.style.pointerEvents = 'none';
 
-    // Show success
-    document.getElementById('form-content').style.display = 'none';
-    document.getElementById('success').classList.add('show');
+    emailjs.send('service_jivi2sw', 'template_rh47smb', templateParams)
+      .then(() => {
+        document.getElementById('form-content').style.display = 'none';
+        document.getElementById('success').classList.add('show');
+      })
+      .catch((error) => {
+        console.error('EmailJS error:', error);
+        btn.style.opacity = '1';
+        btn.style.pointerEvents = 'auto';
+        alert('Error al enviar. Por favor intenta de nuevo.');
+      });
   }
 </script>
 </body>
